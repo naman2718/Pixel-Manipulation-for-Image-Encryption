@@ -1,0 +1,176 @@
+The Pixel Manipulation for Image Encryption code step by step, line by line, to make it easy to understand.
+
+Full Code
+from PIL import Image
+import numpy as np
+def encrypt_image(image_path, key):
+    """
+    Encrypts an image using pixel manipulation.
+    :param image_path: Path to the input image
+    :param key: Encryption key (integer)
+    :return: Encrypted image as a PIL Image object
+    """
+    # Load the image
+    img = Image.open(image_path)
+    img_array = np.array(img)  # Convert image to a NumPy array
+
+    # Perform encryption: Add the key to each pixel value
+    encrypted_array = (img_array + key) % 256  # Ensure values remain in the 0-255 range
+
+    # Convert the encrypted array back to an image
+    encrypted_img = Image.fromarray(encrypted_array.astype('uint8'))
+    return encrypted_img
+def decrypt_image(encrypted_image, key):
+    """
+    Decrypts an encrypted image using pixel manipulation.
+    :param encrypted_image: Encrypted image as a PIL Image object
+    :param key: Decryption key (integer)
+    :return: Decrypted image as a PIL Image object
+    """
+    encrypted_array = np.array(encrypted_image)  # Convert image to a NumPy array
+
+    # Perform decryption: Subtract the key from each pixel value
+    decrypted_array = (encrypted_array - key) % 256  # Ensure values remain in the 0-255 range
+
+    # Convert the decrypted array back to an image
+    decrypted_img = Image.fromarray(decrypted_array.astype('uint8'))
+    return decrypted_img
+# Main scriptif __name__ == "__main__":
+    import os
+
+    # Input: Image file and encryption key
+    image_path = input("Enter the path to the image file: ")
+    if not os.path.exists(image_path):
+        print("Error: File not found!")
+        exit()
+
+    key = int(input("Enter the encryption key (integer): "))
+
+    # Encrypt the image
+    print("Encrypting the image...")
+    encrypted_img = encrypt_image(image_path, key)
+    encrypted_img.save("encrypted_image.png")
+    print("Encrypted image saved as 'encrypted_image.png'.")
+
+    # Decrypt the image
+    print("Decrypting the image...")
+    decrypted_img = decrypt_image(encrypted_img, key)
+    decrypted_img.save("decrypted_image.png")
+    print("Decrypted image saved as 'decrypted_image.png'.")
+
+Explanation
+1. Importing Libraries
+from PIL import Image
+import numpy as np
+from PIL import Image:
+This imports the Image module from the Pillow library (PIL). It is used to open, manipulate, and save image files.
+
+import numpy as np:
+This imports the numpy library and gives it an alias np. NumPy is a powerful library for working with arrays and performing mathematical operations efficiently.
+
+2. Encrypt Image Function
+def encrypt_image(image_path, key):
+    """
+    Encrypts an image using pixel manipulation.
+    :param image_path: Path to the input image
+    :param key: Encryption key (integer)
+    :return: Encrypted image as a PIL Image object
+    """
+
+This function, encrypt_image, takes two parameters:
+1.image_path: The file path of the image to be encrypted.
+2.key: An integer that acts as the encryption key.
+Returns: An encrypted version of the image as a PIL Image object.
+
+3. Loading and Converting the Image
+img = Image.open(image_path)
+img_array = np.array(img)
+Image.open(image_path):
+Opens the image file specified by image_path.
+np.array(img):
+Converts the image into a NumPy array. This array contains the RGB (or grayscale) pixel values of the image, making it easier to perform pixel-level manipulations.
+
+4. Encryption Process
+encrypted_array = (img_array + key) % 256
+(img_array + key):
+Adds the encryption key (key) to every pixel value in the array. For example, if a pixel value is 120 and the key is 50, the new value will be 170.
+
+% 256:
+Ensures the resulting pixel values remain within the range of 0-255 (valid pixel range for 8-bit images).
+
+5. Convert Encrypted Array Back to Image
+encrypted_img = Image.fromarray(encrypted_array.astype('uint8'))
+encrypted_array.astype('uint8'):
+Converts the data type of the array to uint8 (unsigned 8-bit integer), which is the standard format for image pixels.
+
+Image.fromarray():
+Converts the NumPy array back into a PIL Image object.
+
+6. Decrypt Image Function
+def decrypt_image(encrypted_image, key):
+    """
+    Decrypts an encrypted image using pixel manipulation.
+    :param encrypted_image: Encrypted image as a PIL Image object
+    :param key: Decryption key (integer)
+    :return: Decrypted image as a PIL Image object
+    """
+The decrypt_image function takes:
+1.encrypted_image: The encrypted image (as a PIL Image object).
+2.key: The same encryption key used during encryption.
+Returns: The decrypted image as a PIL Image object.
+
+7. Decryption Process
+decrypted_array = (encrypted_array - key) % 256
+(encrypted_array - key):
+Subtracts the encryption key from each pixel value to restore the original pixel values.
+
+% 256:
+Ensures the values remain within the 0-255 range, avoiding negative pixel values.
+
+8. Main Script
+if __name__ == "__main__":
+    import os
+if __name__ == "__main__":
+This ensures the script runs only when executed directly, not when imported as a module.
+
+import os:
+Imports the os module for checking if the file path exists.
+
+9. User Input
+image_path = input("Enter the path to the image file: ")
+if not os.path.exists(image_path):
+    print("Error: File not found!")
+    exit()
+input():
+Prompts the user to enter the path of the image file.
+
+os.path.exists(image_path):
+Checks if the file exists at the given path. If it doesn’t, the script exits with an error message.
+
+10. Encryption and Saving
+key = int(input("Enter the encryption key (integer): "))
+print("Encrypting the image...")
+encrypted_img = encrypt_image(image_path, key)
+encrypted_img.save("encrypted_image.png")print("Encrypted image saved as 'encrypted_image.png'.")
+key = int(input()):
+Asks the user to input an encryption key (integer).
+
+encrypted_img.save("encrypted_image.png"):
+Saves the encrypted image to a file named encrypted_image.png.
+
+11. Decryption and Saving
+print("Decrypting the image...")
+decrypted_img = decrypt_image(encrypted_img, key)
+decrypted_img.save("decrypted_image.png")print("Decrypted image saved as 'decrypted_image.png'.")
+decrypt_image():
+Decrypts the encrypted image using the same key.
+decrypted_img.save("decrypted_image.png"):
+Saves the decrypted image to a file named decrypted_image.png.
+
+How It Works
+1.Encryption:
+oAdds the key to each pixel value, wrapping values using % 256.
+2.Decryption:
+oSubtracts the key from each pixel value, restoring the original image.
+3.Output:
+oThe encrypted image is saved as encrypted_image.png, and the decrypted image is saved as decrypted_image.png.

@@ -1,0 +1,114 @@
+An Image Encryption Tool using pixel manipulation involves reading image pixels, applying an encryption algorithm (like swapping or mathematical operations), and providing a way to decrypt the image back to its original form. Below is the code implementation in Python, with detailed explanations.
+
+Code Implementation
+from PIL import Image
+import numpy as np
+def encrypt_image(image_path, key):
+    """
+    Encrypts an image using pixel manipulation.
+    :param image_path: Path to the input image
+    :param key: Encryption key (integer)
+    :return: Encrypted image as a PIL Image object
+    """
+    # Load the image
+    img = Image.open(image_path)
+    img_array = np.array(img)  # Convert image to a NumPy array
+
+    # Perform encryption: Add the key to each pixel value
+    encrypted_array = (img_array + key) % 256  # Ensure values remain in the 0-255 range
+
+    # Convert the encrypted array back to an image
+    encrypted_img = Image.fromarray(encrypted_array.astype('uint8'))
+    return encrypted_img
+def decrypt_image(encrypted_image, key):
+    """
+    Decrypts an encrypted image using pixel manipulation.
+    :param encrypted_image: Encrypted image as a PIL Image object
+    :param key: Decryption key (integer)
+    :return: Decrypted image as a PIL Image object
+    """
+    encrypted_array = np.array(encrypted_image)  # Convert image to a NumPy array
+
+    # Perform decryption: Subtract the key from each pixel value
+    decrypted_array = (encrypted_array - key) % 256  # Ensure values remain in the 0-255 range
+
+    # Convert the decrypted array back to an image
+    decrypted_img = Image.fromarray(decrypted_array.astype('uint8'))
+    return decrypted_img
+# Main scriptif __name__ == "__main__":
+    import os
+
+    # Input: Image file and encryption key
+    image_path = input("Enter the path to the image file: ")
+    if not os.path.exists(image_path):
+        print("Error: File not found!")
+        exit()
+
+    key = int(input("Enter the encryption key (integer): "))
+
+    # Encrypt the image
+    print("Encrypting the image...")
+    encrypted_img = encrypt_image(image_path, key)
+    encrypted_img.save("encrypted_image.png")
+    print("Encrypted image saved as 'encrypted_image.png'.")
+
+    # Decrypt the image
+    print("Decrypting the image...")
+    decrypted_img = decrypt_image(encrypted_img, key)
+    decrypted_img.save("decrypted_image.png")
+    print("Decrypted image saved as 'decrypted_image.png'.")
+
+Explanation of the Code
+Importing Libraries:
+PIL.Image: Used to handle image operations (load, manipulate, and save images).
+numpy: Used for efficient array manipulation (converting images to arrays for pixel-level operations).
+Encryption Function:
+Input: Path to the image and a numerical encryption key.
+Operation: Adds the key to each pixel value in the image. The modulo operation ensures the values stay within the 0-255 range (valid pixel range for an 8-bit image).
+Output: An encrypted image.
+Decryption Function:
+Input: Encrypted image and the encryption key.
+Operation: Subtracts the key from each pixel value to revert to the original pixel values. The modulo operation ensures no overflow occurs.
+Output: A decrypted image.
+Main Script:
+Prompts the user for an image file path and encryption key.
+Calls the encrypt_image function and saves the encrypted image.
+Calls the decrypt_image function and saves the decrypted image.
+
+How It Works
+Encryption:
+Each pixel value (R, G, B) is altered using a simple arithmetic operation (e.g., addition with the key).
+For example:
+1.Original pixel value = (120, 200, 255)
+2.Key = 50
+3.Encrypted pixel = (170, 250, 49) (values wrapped using % 256).
+Decryption:
+Reverse the operation (subtraction with the key) to retrieve the original pixel values.
+For example:
+1.Encrypted pixel = (170, 250, 49)
+2.Key = 50
+3.Decrypted pixel = (120, 200, 255).
+
+Features
+Custom Key:
+Users can specify an integer key for encryption, adding a layer of customization and security.
+Image Format Compatibility:
+Supports multiple formats (e.g., .png, .jpg) due to the flexibility of the PIL library.
+Ease of Use:
+Simple command-line interface for user input and output.
+Reversible:
+The encryption is lossless, so the original image can be retrieved without any degradation in quality.
+
+Sample Output
+Input Image: sample_image.jpg
+Key: 50
+Encrypted Image: encrypted_image.png
+Decrypted Image: decrypted_image.png (matches the original).
+
+Advantages
+Lightweight: Simple mathematical operations make this approach fast and lightweight.
+Customizable: The key can be modified for different encryption schemes.
+Cross-Platform: Works on any platform with Python and required libraries installed.
+Limitations
+Basic Security: Simple addition/subtraction is not highly secure against advanced attacks. Stronger encryption algorithms (e.g., AES) are recommended for sensitive data.
+Key Dependency: Loss of the key makes decryption impossible.
